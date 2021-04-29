@@ -1,27 +1,29 @@
 import React from 'react'
-import {Text, Image, TouchableOpacity, StyleSheet, SafeAreaView} from 'react-native'
+import {Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, View} from 'react-native'
 import colors  from '../styles/colors'
+import fonts from '../styles/fonts'
+import {Feather} from '@expo/vector-icons'
 
 import wateringImg from '../assets/watering.png'
 
 export  function Welcome(){
     return(
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>
-                Gerencie {'\n'} 
-                suas plantas {'\n'}
-                de forma facil!
-            </Text>
-            <Image source={wateringImg} style={styles.image}/>
-            <Text style={styles.subtitle}>
-                Não esqueça mais de regar suas plantas. Nós cuidamos de lembrar você sempre que precisar
-            </Text>
-
-            <TouchableOpacity style={styles.button} activeOpacity={0.8}>
-                <Text style={styles.buttonText}>
-                    {'>'}
+            <View style={styles.wrapper}>
+                <Text style={styles.title}>
+                    Gerencie {'\n'} 
+                    suas plantas de{'\n'}
+                    forma facil!
                 </Text>
-            </TouchableOpacity>
+                <Image source={wateringImg} style={styles.image} resizeMode="contain"/>
+                <Text style={styles.subtitle}>
+                    Não esqueça mais de regar suas plantas. Nós cuidamos de lembrar você sempre que precisar
+                </Text>
+
+                <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+                    <Feather name="chevron-right"style={styles.buttonIcon}/>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
 }
@@ -30,21 +32,28 @@ export  function Welcome(){
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+    },
+    wrapper: {
         alignItems:'center',
-        justifyContent:'space-between'
+        justifyContent:'space-around',
+        paddingHorizontal: 20,     
+        flex:1
     },
     title:{
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: 'bold',
         textAlign:'center',
         color: colors.heading,
-        marginTop: 38
+        marginTop: 38,
+        fontFamily: fonts.heading,
+        lineHeight: 28
     },
     subtitle: {
         textAlign: 'center',
         fontSize: 18,
         paddingHorizontal: 20,
-        color: colors.heading
+        color: colors.heading,
+        fontFamily: fonts.text
     },
     button: {
         backgroundColor: colors.green,
@@ -56,11 +65,10 @@ const styles = StyleSheet.create({
         borderRadius: 16
     },
     image: {
-        width: 292,
-        height: 284, 
+        height: Dimensions.get('window').width * 0.7, 
     },
-    buttonText: {
-        color: colors.white,
-        fontSize: 24, 
+    buttonIcon: {
+        fontSize: 32,
+        color: colors.white
     }
 })

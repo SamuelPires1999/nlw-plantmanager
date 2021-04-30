@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.green,
         height: 56,
-        width: 56,
         borderRadius: 16,
         marginBottom: 10,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%'
     },
     text: {
         fontSize: 16,

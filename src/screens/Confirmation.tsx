@@ -26,7 +26,7 @@ export function Confirmation() {
                     Agora vamos começar a cuidar das suas plantinhas com muito cuidado
                 </Text>
                 <View style={styles.footer}>
-                    <Button title="Confirmar"/>
+                    <Button title="Confirmar" activeOpacity={0.8}/>
                 </View>
             </View>    
 
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         padding: 30
     },
     emoji: {
-        fontSize: 32
+        fontSize:78
     },
     title: {
         fontSize: 22,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.text,
         textAlign: 'center',
         fontSize: 17,
-        paddingVertical: 20,
+        paddingVertical: 10,
         color: colors.heading
     },
     footer: {
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
         paddingHorizontal: 50,
         marginTop: 20 
     }
-})
+}) 

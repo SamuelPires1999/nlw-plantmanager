@@ -3,13 +3,14 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, 
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
 import {Button} from '../components/Button'
+import { useNavigation } from '@react-navigation/core'
 
 
 export function UserIdentification(){
     const [isFocused, setIsFocused] = useState(false)
     const [isFilled, setIsFilled] = useState(false)
     const [name, setName] = useState<string>()
-
+    const navigation = useNavigation()
     const handleInputBlur = () => {
         setIsFocused(false)
         setIsFilled(!!name)
@@ -22,6 +23,10 @@ export function UserIdentification(){
     const handleInputChange = (value: string) => {
         setIsFocused(!!value)
         setName(value)
+    }
+
+    const handleConfirmation = () => {
+        navigation.navigate('confirmation')
     }
 
     return(
@@ -47,7 +52,7 @@ export function UserIdentification(){
                             onChangeText={handleInputChange}
                         />
                         <View style={styles.footer}>
-                            <Button title="Confirmar"/>
+                            <Button onPress={handleConfirmation} title="Confirmar" activeOpacity={0.8}/>
                         </View>
                     </View>
                 </View>

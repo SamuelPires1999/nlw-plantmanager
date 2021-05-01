@@ -1,30 +1,93 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { EnviromentButton } from "../components/EnviromentButton";
 import { Header } from "../components/Header";
+import { PlantCardPrimary } from "../components/PlantCardPrimary";
 import api from "../services/api";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
+import { Load } from "../components/Load";
 
 interface EnviromentProps {
   title: string;
   key: string;
 }
 
+interface PlantProps {
+  id: string;
+  name: string;
+  about: string;
+  water_tips: string;
+  photo: string;
+  environments: [string];
+  frequency: {
+    times: number;
+    repeat_every: string;
+  };
+}
+
 export function PlantSelect() {
-  const [enviroments, setEnviroments] = useState<EnviromentProps[]>();
+  const [enviroments, setEnviroments] = useState<EnviromentProps[]>([]);
+  const [plants, setPlants] = useState<PlantProps[]>([]);
+  const [filteredPlants, setFilteredPlants] = useState<PlantProps[]>([]);
+  const [environmentSelected, setEnvironmentSelected] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loadMore, setLoadMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  async function fetchPlants() {
+    const { data } = await api.get(
+      `plants?_sort=name&_order=asc&_page=${page}&_limit=8`
+    );
+
+    if (!data) return setLoading(true);
+
+    if (page > 1) {
+      setPlants((oldValue) => [...oldValue, ...data]);
+      setFilteredPlants((oldValue) => [...oldValue, ...data]);
+    } else {
+      setPlants(data);
+      setFilteredPlants(data);
+    }
+    setLoading(false);
+    setLoadingMore(false);
+  }
+
+  const handleEnvironmentSelect = (environment: string) => {
+    setEnvironmentSelected(environment);
+
+    if (environment == "all") return setFilteredPlants(plants);
+
+    const filtered = plants?.filter((plant) =>
+      plant.environments.includes(environment)
+    );
+
+    setFilteredPlants(filtered);
+  };
+
+  const handleFetchMore = (distance: number) => {
+    if (distance < 1) return;
+
+    setLoadingMore(true);
+    setPage((oldValue) => oldValue + 1);
+    fetchPlants();
+  };
 
   useEffect(() => {
     async function fetchEnviroment() {
-      const { data } = await api.get("plants_environments");
+      const { data } = await api.get(
+        "plants_environments?_sort=title&_order=asc"
+      );
       setEnviroments([
         {
           key: "all",
-          title: "Todos",
-        },
-        {
-          key: "all2",
           title: "Todos",
         },
         ...data,
@@ -33,6 +96,12 @@ export function PlantSelect() {
     fetchEnviroment();
   }, []);
 
+  useEffect(() => {
+    fetchPlants();
+  }, []);
+
+  if (loading) return <Load />;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -40,17 +109,37 @@ export function PlantSelect() {
         <Text style={styles.title}>Em qual ambiente</Text>
         <Text style={styles.subtitle}>Você quer colocar sua planta?</Text>
       </View>
-      <ScrollView>
+      <View>
         <FlatList
           data={enviroments}
           renderItem={({ item }) => (
-            <EnviromentButton key={item.key} title={item.title} />
+            <EnviromentButton
+              key={item.key}
+              title={item.title}
+              active={item.key === environmentSelected}
+              onPress={() => handleEnvironmentSelect(item.key)}
+            />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.enviromentList}
         />
-      </ScrollView>
+      </View>
+      <View style={styles.plants}>
+        <FlatList
+          data={filteredPlants}
+          renderItem={({ item }) => <PlantCardPrimary data={item} />}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          onEndReachedThreshold={0.1}
+          onEndReached={({ distanceFromEnd }) =>
+            handleFetchMore(distanceFromEnd)
+          }
+          ListFooterComponent={
+            loadingMore ? <ActivityIndicator color={colors.green} /> : null
+          }
+        />
+      </View>
     </View>
   );
 }
@@ -83,4 +172,11 @@ const styles = StyleSheet.create({
     marginVertical: 32,
     height: 40,
   },
+  plants: {
+    flex: 1,
+    paddingHorizontal: 32,
+    justifyContent: "center",
+  },
 });
+
+//TODO - aula 3 - minuto 56

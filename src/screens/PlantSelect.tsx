@@ -39,7 +39,6 @@ export function PlantSelect() {
   const [environmentSelected, setEnvironmentSelected] = useState("all");
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [loadMore, setLoadMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
   async function fetchPlants() {

@@ -7,7 +7,7 @@ import {Feather} from '@expo/vector-icons'
 import wateringImg from '../assets/watering.png'
 import { useNavigation } from '@react-navigation/core'
 
-export  function Welcome(){
+export function Welcome(){
 
     const navigation = useNavigation()
 
@@ -35,7 +35,6 @@ export  function Welcome(){
         </SafeAreaView>
     )
 }
-
 
 const styles = StyleSheet.create({
     container:{

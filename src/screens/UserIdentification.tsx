@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import { SafeAreaView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
 import {Button} from '../components/Button'
 import { useNavigation } from '@react-navigation/core'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export function UserIdentification(){
     const [isFocused, setIsFocused] = useState(false)
@@ -25,7 +25,11 @@ export function UserIdentification(){
         setName(value)
     }
 
-    const handleConfirmation = () => {
+    const handleConfirmation = async () => {
+        if (!name) {
+            return Alert.alert('Insira um nome!')
+        }
+        await AsyncStorage.setItem('@plantmanager:user', name)
         navigation.navigate('confirmation')
     }
 

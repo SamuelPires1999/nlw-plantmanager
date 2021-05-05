@@ -13,23 +13,12 @@ import api from "../services/api";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 import { Load } from "../components/Load";
+import { useNavigation } from "@react-navigation/core";
+import { PlantProps } from "../libs/storage";
 
 interface EnviromentProps {
   title: string;
   key: string;
-}
-
-interface PlantProps {
-  id: string;
-  name: string;
-  about: string;
-  water_tips: string;
-  photo: string;
-  environments: [string];
-  frequency: {
-    times: number;
-    repeat_every: string;
-  };
 }
 
 export function PlantSelect() {
@@ -40,6 +29,7 @@ export function PlantSelect() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const navigation = useNavigation()
 
   async function fetchPlants() {
     const { data } = await api.get(
@@ -57,6 +47,10 @@ export function PlantSelect() {
     }
     setLoading(false);
     setLoadingMore(false);
+  }
+
+  const handlePlantSelect = (plant: PlantProps) => {
+    navigation.navigate('plantSave', {plant})
   }
 
   const handleEnvironmentSelect = (environment: string) => {
@@ -129,7 +123,7 @@ export function PlantSelect() {
         <FlatList
           data={filteredPlants}
           keyExtractor={(item) => String(item.id)}  
-          renderItem={({ item }) => <PlantCardPrimary data={item} />}
+          renderItem={({ item }) => <PlantCardPrimary data={item} onPress={() => handlePlantSelect(item)} />}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           onEndReachedThreshold={0.1}
